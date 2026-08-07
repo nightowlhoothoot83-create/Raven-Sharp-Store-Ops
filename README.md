@@ -2,12 +2,16 @@
 
 A private, phone-friendly Cloudflare Worker for managing an Etsy seller shop through Etsy's official Open API v3.
 
-## Version 1
+## Current version
 
 - Secure Etsy OAuth 2.0 + PKCE connection
-- View active shop listings
-- View and create shop sections
-- Move existing listings into sections
+- View active, draft, inactive, expired, and sold-out listings
+- Create shop sections and move listings between them
+- Create new digital download listings as drafts
+- Edit title, description, price, quantity, Etsy category, shop section, maker, made date, renewal, tax, and supply settings
+- Edit up to 13 keywords/tags, materials, and styles
+- Upload listing images and choose their rank
+- Upload up to five Etsy digital files, with a maximum of 20MB each
 - Refresh expiring Etsy access tokens automatically
 - No automatic publishing
 - No Etsy credentials stored in GitHub
@@ -18,6 +22,8 @@ Connect this repository to **Workers & Pages → Create → Continue with GitHub
 
 Use:
 
+- Production branch: `main`
+- Root directory: `/`
 - Build command: leave blank
 - Deploy command: `npx wrangler deploy`
 
@@ -41,6 +47,6 @@ After Cloudflare deploys the Worker, register this exact callback in the Etsy de
 
 The URL is case-sensitive and must match exactly, including the absence of a trailing slash.
 
-## Safety
+## Publish safety lock
 
-Version 1 can organise listings but cannot publish a listing. Later versions can add draft creation, image uploads, digital-file uploads, metadata generation, and bulk editing while keeping final publication manual.
+The application contains no publish route or publish button. It never sends `state=active` to Etsy. New listings are created as drafts. Existing active listings can have their content updated, but their state is not changed.
