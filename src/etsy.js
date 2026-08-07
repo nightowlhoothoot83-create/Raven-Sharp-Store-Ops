@@ -1,6 +1,6 @@
 const ETSY_AUTH_URL = 'https://www.etsy.com/oauth/connect';
 const ETSY_TOKEN_URL = 'https://api.etsy.com/v3/public/oauth/token';
-const ETSY_API_BASE = 'https://api.etsy.com/v3/application';
+const ETSY_API_BASE = 'https://openapi.etsy.com/v3/application';
 
 export class EtsyApiError extends Error {
   constructor(status, message, details = null) {
