@@ -1,0 +1,21 @@
+name: Store Ops offline validation
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Offline route tests
+        run: npm test
+      - name: Syntax check selected entrypoint
+        run: node --check src/agent-publish.js

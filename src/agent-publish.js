@@ -78,7 +78,11 @@ async function publishReviewedDraft(request, env, listingId) {
       { method: 'PATCH', body: new URLSearchParams({ state: 'active' }) });
 
     const updated = await etsyRequest(env, loaded.session, `/listings/${listingId}`).catch(() => null);
-    if (updated && String(updated.state || '').toLowerCase() !== 'active') {
+    if (!updated) {
+      throw new Error('Etsy accepted the publish request, but Raven could not verify the result. Check the listing in Etsy before trying again; nothing was retried automatically.');
+    }
+    assertOwnedListing(updated, loaded.session, listingId);
+    if (String(updated.state || '').toLowerCase() !== 'active') {
       throw new Error(`Etsy accepted the publish request but the listing is still ${updated.state || 'not active'}. Review it before trying again.`);
     }
 
@@ -191,3 +195,4 @@ function safeError(error) {
   if (error instanceof EtsyApiError) return `Etsy replied: ${error.message}`;
   return error instanceof Error ? error.message : 'Raven hit an unexpected publish error.';
 }
+
