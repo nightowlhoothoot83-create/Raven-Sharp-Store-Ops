@@ -5,7 +5,7 @@ import { encryptValue, sessionCookie } from '../src/security.js';
 
 const env={ETSY_KEYSTRING:'test-key',ETSY_SHARED_SECRET:'test-shared',SESSION_SECRET:'test-session-secret-at-least-thirty-two-characters'};
 const listing={listing_id:123,shop_id:9,state:'draft',title:'Test download',description:'Test description',price:{amount:1200,divisor:100},taxonomy_id:1,listing_type:'download'};
-async function attempt({verification='active',confirmation='yes',csrf='test-csrf',owner=9}={}) {
+async function attempt({verification='active',confirmation='yes',csrf='test-csrf',owner=9,origin='https://store.test',authenticated=true}={}) {
   const session={shopId:9,accessToken:'test-token',csrf:'test-csrf',expiresAt:Date.now()+3600000};
   const cookie=sessionCookie(await encryptValue(session,env.SESSION_SECRET)).split(';')[0];
   const body=new URLSearchParams({csrf,confirm_publish:confirmation});
@@ -24,7 +24,10 @@ async function attempt({verification='active',confirmation='yes',csrf='test-csrf
   };
   console.error=()=>{};
   try{
-    const response=await app.fetch(new Request('https://store.test/agent/listings/123/publish',{method:'POST',headers:{Cookie:cookie,Origin:'https://store.test'},body}),env);
+    const headers = new Headers();
+    if (authenticated) headers.set('Cookie', cookie);
+    if (origin !== undefined && origin !== '') headers.set('Origin', origin);
+    const response=await app.fetch(new Request('https://store.test/agent/listings/123/publish',{method:'POST',headers,body}),env);
     const location=new URL(response.headers.get('Location'),'https://store.test');
     return {patches,status:response.status,error:location.searchParams.get('error'),notice:location.searchParams.get('notice')};
   }finally{globalThis.fetch=original;console.error=oldError;}
@@ -49,4 +52,14 @@ test('missing approval and incorrect CSRF never send a publish request',async()=
 });
 test('unowned draft never sends a publish request',async()=>{
   const result=await attempt({owner:55});assert.equal(result.patches,0);assert.ok(result.error);
+});
+test('hostile and opaque origins never reach Etsy even with valid session and CSRF',async()=>{
+  for (const origin of ['https://attacker.test', 'null', 'http://store.test', 'https://store.test:8443']) {
+    const result=await attempt({origin});assert.equal(result.patches,0);assert.match(result.error,/Cross-site/);
+  }
+});
+test('missing session or missing Origin with wrong CSRF cannot publish',async()=>{
+  for (const options of [{authenticated:false},{origin:'',csrf:'incorrect'}]) {
+    const result=await attempt(options);assert.equal(result.patches,0);assert.ok(result.error);
+  }
 });

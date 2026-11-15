@@ -408,7 +408,10 @@ function pageHeaders() {
   return new Headers({
     'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store',
     'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'; img-src 'self' https: data:; form-action 'self' https://www.etsy.com; base-uri 'none'; frame-ancestors 'none'",
-    'Referrer-Policy': 'no-referrer', 'X-Content-Type-Options': 'nosniff',
+    // no-referrer makes native non-CORS POSTs send Origin: null in Chromium,
+    // breaking our strict same-origin check. Keep same-origin form identity
+    // while still withholding the Referer from external destinations.
+    'Referrer-Policy': 'same-origin', 'X-Content-Type-Options': 'nosniff',
   });
 }
 function json(value, status = 200) {
