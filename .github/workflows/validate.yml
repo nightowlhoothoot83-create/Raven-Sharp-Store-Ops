@@ -7,7 +7,7 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
@@ -15,7 +15,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: npm
+      - name: Install locked test and build tools
+        run: npm ci
       - name: Offline route tests
         run: npm test
       - name: Syntax check selected entrypoint
         run: node --check src/agent-publish.js
+      - name: Install browser for native form regression
+        run: npx playwright install --with-deps chromium
+      - name: Native listing edit and logout regression (mock providers)
+        run: npm run test:browser

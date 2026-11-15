@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "test": "node --test",
+    "test:browser": "node scripts/browser-forms.mjs",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy"
   },
   "devDependencies": {
+    "playwright": "1.62.1",
     "wrangler": "^4.0.0"
   }
 }
-
