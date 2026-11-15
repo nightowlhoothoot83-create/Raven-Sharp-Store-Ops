@@ -96,7 +96,8 @@ def prepare(root, products, previews, out):
     if not products: raise ValueError('Select at least one product file')
     files = select(root, products, PRODUCT_TYPES)
     images = select(root, previews, PREVIEW_TYPES)
-    if set(products) & set(previews): raise ValueError('Product downloads and public previews must be separate files')
+    if {name for name, _, _ in files} & {name for name, _, _ in images}:
+        raise ValueError('Product downloads and public previews must be separate files')
     if sum(len(data) for _, data, _ in files + images) > MAX_SOURCE_BYTES:
         raise ValueError('Conservative total source limit exceeded')
     def records(items):

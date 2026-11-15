@@ -88,5 +88,10 @@ class HandoffTests(unittest.TestCase):
         with self.assertRaises(ValueError): self.prepare(['preview.png'],['preview.png'])
         target,_=self.prepare(); (target/'products.zip').write_bytes(b'tampered')
         with self.assertRaises(ValueError): self.prepare()
+    def test_normalized_path_alias_cannot_expose_product_as_public_preview(self):
+        (self.root/'nested').mkdir()
+        (self.root/'nested/art.png').write_bytes((self.root/'preview.png').read_bytes())
+        with self.assertRaises(ValueError): self.prepare(['nested//art.png'],['nested/art.png'])
+        self.assertFalse(self.out.exists())
 
 if __name__=='__main__': unittest.main()
