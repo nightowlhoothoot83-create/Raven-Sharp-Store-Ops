@@ -31,6 +31,6 @@ Run checks:
 python -m unittest discover -s test -p runable_handoff_test.py -v
 ```
 
-Nine tests cover deterministic repeats, exact archive members/hash consistency, preserved originals, preview separation, missing/path/symlink/hidden/sensitive inputs, oversize totals and actual ZIP, malformed document structure/CRC, duplicated/overlapping selections and tampered existing output.
+Ten tests cover deterministic repeats, exact archive members/hash consistency, preserved originals, preview separation, missing/path/symlink/hidden/sensitive inputs, oversize totals and actual ZIP, malformed document structure/CRC, duplicated/overlapping selections (including normalized path aliases) and tampered existing output.
 
 A local real-artifact exercise packaged the six existing custom-order desk-kit deliverables plus a separate preview at `/workspace/outputs/runable-handoff/c7846d05e670c1ccdfb2d1485ddfd65148756afee36030ddea483fc13882bef1/`. This is **prepared, not uploaded**. It proves local XLSX/PDF/CSV/TXT packaging compatibility only, not Runable ingestion, Etsy draft creation, publication, payment or a sale.
