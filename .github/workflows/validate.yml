@@ -20,6 +20,8 @@ jobs:
         run: npm ci
       - name: Offline route tests
         run: npm test
+      - name: Export handoff regressions (local files only)
+        run: python3 -m unittest discover -s test -p runable_handoff_test.py -v
       - name: Syntax check selected entrypoint
         run: node --check src/agent-publish.js
       - name: Install browser for native form regression

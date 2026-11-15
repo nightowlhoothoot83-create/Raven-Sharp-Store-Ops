@@ -20,3 +20,7 @@ Target only existing `raven-sharp-store-ops` Worker and its existing workers.dev
 To retry after release, open the listing editor directly and refresh it so the new document policy is applied. An already-open tab can retain its old policy until reloaded. Do not disable browser security or disconnect/reconnect Etsy solely because of this error.
 
 Runable is separate from this browser-session API. Its account consent and actual connector schemas are not available here. Do not share session cookies or API secrets in workflow files, import/rebuild the whole application, relax same-origin checks, or equate a generated file with a verified Etsy draft. See the compatibility evidence and file handoff documentation for supported preparation work.
+
+## Verified live release
+
+PR2 merged at `4e2db51346f5bf86be8bd1a265b89f2eb01865f5`. Existing Workers Builds automatically released the tested code; no manual secret/settings change or direct API upload was necessary. At 22:49 UTC on15 November, public GET `/` returned200 with `Referrer-Policy: same-origin`, existing CSP and `Cache-Control: no-store`; `/health` returned200 with `explicitPublishGate:true` and `autonomousPublish:false`. Cloudflare deployment `e285ccf4-cfc9-4621-a5a6-d6c2c2ab3736`, version `d46961b4-58cc-402e-b5af-64723ecea73a`, was at100%; downloaded deployed code contained the corrected header and no old no-referrer header. Later documentation/tool-only builds may have newer version IDs without a runtime change. No owner session or real listing write was used for these live reads.
